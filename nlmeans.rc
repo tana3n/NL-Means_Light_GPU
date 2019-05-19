@@ -1,0 +1,8 @@
+EVEN_T0 PIXELSHADER "even_t0.pso"
+EVEN_T1 PIXELSHADER "even_t1.pso"
+EVEN_T2 PIXELSHADER "even_t2.pso"
+EVEN_T3 PIXELSHADER "even_t3.pso"
+ODD_T0 PIXELSHADER "odd_t0.pso"
+ODD_T1 PIXELSHADER "odd_t1.pso"
+ODD_T2 PIXELSHADER "odd_t2.pso"
+ODD_T3 PIXELSHADER "odd_t3.pso"
