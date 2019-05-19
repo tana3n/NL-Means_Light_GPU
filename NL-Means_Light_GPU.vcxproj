@@ -18,6 +18,16 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="nlmeansGPU.cpp" />
+    <ClCompile Include="wavelet.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="wavelet.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="nlmeansGPU.def" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{2D35E6CB-B143-433A-AEFD-AD9B0A83FBD3}</ProjectGuid>
