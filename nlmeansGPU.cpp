@@ -1,9 +1,14 @@
 #include <windows.h>
+//AviUtlのFiler.h
 #include "filter.h"
 #include <stdio.h>
+/*一時的に作業フォルダに配置*/
 #include <d3d9.h>
-#include <d3dx9.h>
+//#include <d3dx9.h>
+#include "resource/d3dx9.h"
 #include <d3d9types.h>
+#pragma comment( lib, "d3d9.lib" )
+#pragma comment( lib, "resource/d3dx9.lib" )
 #include <emmintrin.h>
 #include "wavelet.h"
 
@@ -12,18 +17,18 @@
 #endif
 
 #define TRACK_N    8                                    //    トラックバーの数
-TCHAR *track_name[] = {"輝度空間","輝度時間","輝度分散","色差空間","色差時間","色差分散","アダプタ","保護"};//    トラックバーの名前
-int track_default[] = {1,   0,  40,  1,  0,  40,  0, 100};//    トラックバーの初期値
-int track_s[] = {0,   0,   1,  0,  0,   1,  0, 0};      //    トラックバーの下限値
-int track_e[] = {5,   3, 100,  5,  3, 100,  0, 100};    //    トラックバーの上限値
+TCHAR* track_name[] = { (TCHAR*)"輝度空間",(TCHAR*)"輝度時間",(TCHAR*)"輝度分散",(TCHAR*)"色差空間",(TCHAR*)"色差時間",(TCHAR*)"色差分散",(TCHAR*)"アダプタ",(TCHAR*)"保護" };//    トラックバーの名前
+int track_default[] = { 1,   0,  40,  1,  0,  40,  0, 100 };//    トラックバーの初期値
+int track_s[] = { 0,   0,   1,  0,  0,   1,  0, 0 };      //    トラックバーの下限値
+int track_e[] = { 5,   3, 100,  5,  3, 100,  0, 100 };    //    トラックバーの上限値
 #define CHECK_N 1
-TCHAR    *check_name[] = {"Use UpdateSurface"};
-int        check_default[] = {1};
+TCHAR* check_name[] = { (TCHAR*)"Use UpdateSurface" };
+int        check_default[] = { 1 };
 
 FILTER_DLL filter = {
     FILTER_FLAG_EX_INFORMATION | FILTER_FLAG_NO_INIT_DATA,    //    フィルタのフラグ
     0,0,                            //    設定ウインドウのサイズ (FILTER_FLAG_WINDOW_SIZEが立っている時に有効)
-    "NL-Means-Light for GPU TypeC", //    フィルタの名前
+	(TCHAR*)"NL-Means-Light for GPU TypeC", //    フィルタの名前
     TRACK_N,                        //    トラックバーの数 (0なら名前初期値等もNULLでよい)
     track_name,                     //    トラックバーの名前郡へのポインタ
     track_default,                  //    トラックバーの初期値郡へのポインタ
@@ -39,7 +44,7 @@ FILTER_DLL filter = {
     NULL,NULL,                      //    システムで使いますので使用しないでください
     NULL,                           //  拡張データ領域へのポインタ (FILTER_FLAG_EX_DATAが立っている時に有効)
     NULL,                           //  拡張データサイズ (FILTER_FLAG_EX_DATAが立っている時に有効)
-    "NL-Means-Light for GPU TypeC Ver.111125",
+	(TCHAR*)"NL-Means-Light for GPU TypeC Ver.111125 mod.190519",
     //  フィルタ情報へのポインタ (FILTER_FLAG_EX_INFORMATIONが立っている時に有効)
     NULL,                           //    セーブが開始される直前に呼ばれる関数へのポインタ (NULLなら呼ばれません)
     NULL,                           //    セーブが終了した直前に呼ばれる関数へのポインタ (NULLなら呼ばれません)
@@ -181,7 +186,7 @@ bool InitD3D(HWND hwnd, HMODULE hModule, UINT _adapter)
             direct3D = Direct3DCreate9(D3D_SDK_VERSION);
             if (direct3D == NULL)
             {
-                ShowErrorMsg("Direct3DCreate9に失敗");
+                ShowErrorMsg((TCHAR*)"Direct3DCreate9に失敗");
                 skipfilter = TRUE;
                 return false;
             }
@@ -234,7 +239,7 @@ bool CreateSystemTexture(int width, int height, D3DFORMAT Format, LPDIRECT3DTEXT
 {
     if (FAILED(D3DXCreateTexture(device, width, height, 1, 0, Format, D3DPOOL_SYSTEMMEM, ppTexture)))
     {
-        ShowErrorMsg("D3DXCreateTextureに失敗");
+        ShowErrorMsg((TCHAR*)"D3DXCreateTextureに失敗");
         return false;
     }
     return true;
@@ -244,7 +249,7 @@ bool CreateTexture(int width, int height, DWORD Usage, D3DFORMAT Format, LPDIREC
 {
     if (FAILED(D3DXCreateTexture(device, width, height, 1, Usage, Format, D3DPOOL_DEFAULT, ppTexture)))
     {
-        ShowErrorMsg("D3DXCreateTextureに失敗");
+        ShowErrorMsg((TCHAR*)"D3DXCreateTextureに失敗");
         return false;
     }
     return true;
@@ -1108,7 +1113,7 @@ IDirect3DTexture9* GetSrcTexture(FILTER* fp, FILTER_PROC_INFO* fpip, int frameIn
     D3DLOCKED_RECT lockedRect = {0};
     if (FAILED(tex->LockRect(0, &lockedRect, NULL, D3DLOCK_DISCARD | D3DLOCK_NOSYSLOCK)))
     {
-        ShowErrorMsg("LockRectに失敗");
+        ShowErrorMsg((TCHAR*)"LockRectに失敗");
         return FALSE;
     }
     TexReadWriteParam param;
@@ -1136,7 +1141,7 @@ IDirect3DTexture9* GetSrcTexture(FILTER* fp, FILTER_PROC_INFO* fpip, int frameIn
 
     if (FAILED(tex->UnlockRect(0)))
     {
-        ShowErrorMsg("UnlockRectに失敗");
+        ShowErrorMsg((TCHAR*)"UnlockRectに失敗");
         return FALSE;
     }
     if (fp->check[0] != 0)
@@ -1189,7 +1194,7 @@ IDirect3DPixelShader9* GetPixelShader(int spaceRadius, int timeRadius, HMODULE h
             }
         }
     }
-    ShowErrorMsg("ピクセルシェーダの作成に失敗");
+    ShowErrorMsg((TCHAR*)"ピクセルシェーダの作成に失敗");
     return NULL;
 }
 
@@ -1204,7 +1209,7 @@ bool Render(FILTER *fp,FILTER_PROC_INFO *fpip, int frameIndex)
     {
         if (InitTexture(fpip->w, fpip->h, fp->track[0], fp->track[3]) == FALSE)
         {
-            ShowErrorMsg("initTextureに失敗");
+            ShowErrorMsg((TCHAR*)"initTextureに失敗");
             FinalizeD3D();
             return FALSE;
         }
@@ -1423,7 +1428,7 @@ BOOL func_proc( FILTER *fp,FILTER_PROC_INFO *fpip )
     {
         if (!Render(fp, fpip, frameIndex))
         {
-            ShowErrorMsg("Renderに失敗");
+            ShowErrorMsg((TCHAR*)"Renderに失敗");
             FinalizeD3D();
             return FALSE;
         }
@@ -1494,7 +1499,7 @@ BOOL func_proc( FILTER *fp,FILTER_PROC_INFO *fpip )
     if (FAILED(DestSysTexture->LockRect(0, &lockedRect, NULL, D3DLOCK_READONLY)))
     {
         FinalizeD3D();
-        ShowErrorMsg("LockRectに失敗");
+        ShowErrorMsg((TCHAR*)"LockRectに失敗");
         return FALSE;
     }
     prm.src = (short*)lockedRect.pBits;
@@ -1518,7 +1523,7 @@ BOOL func_proc( FILTER *fp,FILTER_PROC_INFO *fpip )
     }
     if (FAILED(DestSysTexture->UnlockRect(0))){
         FinalizeD3D();
-        ShowErrorMsg("UnlockRectに失敗");
+        ShowErrorMsg((TCHAR*)"UnlockRectに失敗");
         return FALSE;
     }
 
